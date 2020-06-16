@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  gather_facts: False
+
+  tasks:
+  - fail: msg="The variable 'user_name' is undefined"
+    when: user_name is undefined
+
+  - name: Create {{ user_name }} and return creds
+    iam:
+      iam_type: user
+      name: '{{ user_name }}'
+      state: present
+      access_key_state: create
+    register: credentials
+
+  - debug: var=credentials
