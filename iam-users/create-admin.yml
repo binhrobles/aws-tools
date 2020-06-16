@@ -6,12 +6,20 @@
   - fail: msg="The variable 'user_name' is undefined"
     when: user_name is undefined
 
+  - name: ensure admin-users group is present
+    iam_group:
+      name: admin-users
+      managed_policy:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      state: present
+
   - name: Create {{ user_name }} and return creds
     iam:
       iam_type: user
       name: '{{ user_name }}'
       state: present
       access_key_state: create
+      groups: admin-users
     register: credentials
 
   - debug: var=credentials
